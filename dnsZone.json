@@ -1,0 +1,57 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "dnsZoneName": {
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/dnsZones",
+      "apiVersion": "2023-07-01-preview",
+      "name": "[parameters('dnsZoneName')]",
+      "location": "global",
+      "properties": {},
+      "tags": {
+        "Project": "ArkadeAnarky",
+        "Environment": "Demo",
+        "Owner": "ArkadeAnarky",
+        "CostCenter": "KNVRGNT",
+        "Stage": "Prototype"
+      },
+      "resources": [
+        {
+          "type": "A",
+          "apiVersion": "2023-07-01-preview",
+          "name": "@" ,
+          "dependsOn": [
+            "[parameters('dnsZoneName')]"
+          ],
+          "properties": {
+            "TTL": 3600,
+            "ARecords": [
+              {
+                "ipv4Address": "<Azure-provided-IP>"
+              }
+            ]
+          }
+        },
+        {
+          "type": "CNAME",
+          "apiVersion": "2023-07-01-preview",
+          "name": "www",
+          "dependsOn": [
+            "[parameters('dnsZoneName')]"
+          ],
+          "properties": {
+            "TTL": 3600,
+            "CNAMERecord": {
+              "cname": "arkadeanarky.centralus.azurestaticapps.net"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
